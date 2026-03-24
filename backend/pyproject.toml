@@ -1,0 +1,17 @@
+[tool.ruff]
+# Set the desired line length
+line-length = 88
+# Set the target Python version
+target-version = "py311"
+
+[tool.ruff.lint]
+# Select the rule codes or prefixes to enable
+# E and W for pycodestyle errors/warnings, F for Pyflakes, I for isort, B for bugbear
+select = ["E", "W", "F", "I", "B"]
+# Ignore specific rules globally (e.g., ignore line length rule E501 if using a formatter like Black)
+ignore = ["E501"]
+
+
+# Ignore import violations in all `__init__.py` files
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401", "F403", "F811"]
