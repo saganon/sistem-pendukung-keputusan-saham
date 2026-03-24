@@ -1,3 +1,8 @@
-# sistem-pendukung-keputusan-saham
+# Sistem Pendukung Keputusan Saham
 
-Test changes
+## Getting Started
+Install all dependencies. Go to `backend` directory and run below command:
+
+```
+pip3 install .
+```
