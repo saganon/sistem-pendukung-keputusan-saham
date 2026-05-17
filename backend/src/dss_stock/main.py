@@ -1,4 +1,5 @@
 from dss_stock.calculate_entropy_weight import calculate_entropy_weights
+from dss_stock.calculate_topsis import calculate_topsis
 from dss_stock.under_value_stock import under_value_stock
 import pandas as pd
 
@@ -26,21 +27,17 @@ print("--- Matriks Keputusan Awal ---")
 print(df_kriteria)
 print("\n" + "=" * 50 + "\n")
 
-# 2. Jalankan Fungsi Perhitungan Entropy
-bobot_entropy = calculate_entropy_weights(df_kriteria, criteria_types=None)
+bobot_entropy = calculate_entropy_weights(df_kriteria)
 
-# 3. Tampilkan Hasil Pretty-Print Bobot Kriteria
-print("--- Hasil Bobot Kriteria Menggunakan Metode Entropy ---")
-df_hasil = pd.DataFrame(
-    {"Nilai Bobot": bobot_entropy, "Persentase": bobot_entropy * 100}
-)
+jenis_kriteria = {
+    "PBV": "cost",
+    "EPS": "benefit",
+    "ROA": "benefit",
+    "DER": "cost",
+}
 
-# Format tampilan desimal
+hasil_topsis = calculate_topsis(df_kriteria, bobot_entropy, jenis_kriteria)
+
+print("--- Hasil Perankingan Akhir Menggunakan Metode TOPSIS ---")
 pd.options.display.float_format = "{:,.4f}".format
-df_hasil["Persentase"] = df_hasil["Persentase"].apply(lambda x: f"{x:.2f}%")
-
-print(df_hasil)
-
-# Validasi total bobot harus sama dengan 1
-print(f"\nTotal Bobot Kontrol: {bobot_entropy.sum():.2f}")
-
+print(hasil_topsis[["D_plus", "D_minus", "Skor_TOPSIS", "Rank"]])
