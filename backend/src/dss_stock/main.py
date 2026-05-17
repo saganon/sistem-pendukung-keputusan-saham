@@ -30,6 +30,10 @@ print("\n" + "=" * 50 + "\n")
 
 bobot_entropy = calculate_entropy_weights(df_kriteria)
 
+print("--- Hasil ENTROPY ---")
+print(bobot_entropy)
+print("\n" + "=" * 50 + "\n")
+
 jenis_kriteria = {
     "PBV": "cost",
     "EPS": "benefit",
