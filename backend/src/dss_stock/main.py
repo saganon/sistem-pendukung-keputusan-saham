@@ -14,6 +14,16 @@ except Exception:
 BASE_DIR = Path(__file__).resolve().parent
 file_path = BASE_DIR.parent.parent / "list_stock_code.txt"
 
+print("Fetching live USD to IDR exchange rate...")
+try:
+    usd_ticker = yf.Ticker("USDIDR=X")
+    USD_TO_IDR = usd_ticker.info.get("previousClose")
+    if USD_TO_IDR is None:
+        hist_usd = usd_ticker.history(period="1d")
+        USD_TO_IDR = float(hist_usd['Close'].iloc[-1])
+except Exception as e:
+    print(f"Gagal mengambil kurs live, menggunakan kurs default. Error: {e}")
+
 # Membaca daftar kode saham energi
 with open(file_path, "r", encoding="utf-8") as file:
     content = file.readlines()
@@ -53,22 +63,11 @@ for x in content:
     raw_eps = info.get("trailingEps")
     raw_bvps = info.get("bookValue")
 
-    # Jika di .info bernilai None, baru intip financials / balance_sheet
-    try:
-        if raw_eps is None:
-            financials = ticker.financials
-            if not financials.empty and "Diluted EPS" in financials.index:
-                raw_eps = financials.loc["Diluted EPS"].iloc[0]
+    if financial_currency != market_currency and financial_currency == "USD":
+        if raw_bvps is not None:
+            raw_bvps *= USD_TO_IDR
 
-        if raw_bvps is None:
-            balance_sheet = ticker.balance_sheet
-            if not balance_sheet.empty and "Stockholders Equity" in balance_sheet.index and "Ordinary Shares Number" in balance_sheet.index:
-                total_equity = balance_sheet.loc["Stockholders Equity"].iloc[0]
-                total_shares = balance_sheet.loc["Ordinary Shares Number"].iloc[0]
-                raw_bvps = total_equity / total_shares
-    except Exception as e:
-        print(f"Data komponen backup bermasalah untuk {stock_code}: {e}")
-
+    print(f"Stock {stock_code} | RAW BVPS {raw_bvps} | RAW EPS {raw_eps}")
     # 3. Sinkronisasi ke Objek Model Data
     data = StockInfo(
         stock_code=stock_code,
