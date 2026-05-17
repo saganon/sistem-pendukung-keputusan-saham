@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 
 
 def calculate_topsis(df_input, weights, criteria_types):
@@ -13,7 +12,6 @@ def calculate_topsis(df_input, weights, criteria_types):
 
     """
     df = df_input.copy()
-    alternatives = df.index
     columns = df.columns
 
     # Pastikan bobot berbentuk numpy array yang urutannya sesuai dengan kolom df

@@ -29,7 +29,7 @@ def calculate_entropy_weights(df_input):
     k = 1.0 / np.log(m)
 
     entropy_j = []
-    for idx, col in enumerate(columns):
+    for idx, _col in enumerate(columns):
         P_ij = P[:, idx]
 
         # Jaring pengaman: ln(x) tidak terdefinisi jika x <= 0.

@@ -1,7 +1,8 @@
+import pandas as pd
+
 from dss_stock.calculate_entropy_weight import calculate_entropy_weights
 from dss_stock.calculate_topsis import calculate_topsis
 from dss_stock.under_value_stock import under_value_stock
-import pandas as pd
 
 stock_list = under_value_stock()
 

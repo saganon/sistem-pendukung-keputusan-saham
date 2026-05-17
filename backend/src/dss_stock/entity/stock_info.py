@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class StockInfo:
     stock_code: str

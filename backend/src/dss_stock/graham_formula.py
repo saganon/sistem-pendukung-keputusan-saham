@@ -1,5 +1,6 @@
 import math
 
+
 class GrahamFormula:
     @staticmethod
     def calculate(eps: float, bvps: float):
