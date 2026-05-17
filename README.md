@@ -11,3 +11,8 @@ Go to backend > src. Run the project
 ```
 python3 -m dss_stock.main
 ```
+
+Fix lint
+```
+ruff check --fix
+```
