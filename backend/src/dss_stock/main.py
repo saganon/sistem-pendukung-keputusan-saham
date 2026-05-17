@@ -1,4 +1,4 @@
-from dss_stock.normalize_data import under_value_stock
+from dss_stock.under_value_stock import under_value_stock
 import pandas as pd
 
 stock_list = under_value_stock()
