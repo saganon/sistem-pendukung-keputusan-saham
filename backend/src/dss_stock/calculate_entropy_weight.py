@@ -2,57 +2,59 @@ import numpy as np
 import pandas as pd
 
 
-def calculate_entropy_weights(df_input, criteria_types):
-    """Menghitung bobot kriteria menggunakan metode Entropy.
-
-    Parameters:
-    - df_input: pandas DataFrame (baris = alternatif/saham, kolom = kriteria)
-    - criteria_types: dict, contoh {'PER': 'cost', 'ROE': 'benefit'}
-                      (Opsional jika normalisasi Anda bergantung pada jenis
-                      kriteria)
-
-    Returns:
-    - weights_series: pandas Series berisi bobot final tiap kriteria
-    """
-    # Buat copy agar tidak merusak dataframe asli
+def calculate_entropy_weights(df_input):
     df = df_input.copy()
+    columns = df.columns
 
-    # 1. NORMALISASI MATRIKS KEPUTUSAN (p_ij)
-    # Rumus: p_ij = x_ij / sum(x_ij) untuk setiap kolom
-    # Kita tambahkan epsilon (1e-9) untuk menghindari pembagian dengan nol jika ada kolom bernilai 0
-    p_matrix = df.apply(lambda x: x / (x.sum() + 1e-9), axis=0)
+    # m merepresentasikan jumlah keseluruhan emiten yang masuk (baris dataframe)
+    m = len(df)
 
+    # =========================================================================
+    # 1. NORMALISASI PROPORSI (P_ij)
+    # Rumus Tesis: P_ij = C_ij / sqrt( sum( C_ij^2 ) )
+    # =========================================================================
+    # Menghitung akar kuadrat dari jumlah kuadrat keseluruhan nilai per kriteria
+    norm_factor = np.sqrt(np.sum(df.values**2, axis=0))
+
+    # Jaring pengaman anti-pembagian nol
+    norm_factor = np.where(norm_factor == 0, 1e-9, norm_factor)
+
+    # Matriks Proposional P
+    P = df.values / norm_factor
+
+    # =========================================================================
     # 2. MENGHITUNG NILAI ENTROPY (E_j)
-    # Rumus: E_j = -k * sum(p_ij * ln(p_ij))
-    # di mana k = 1 / ln(n) dan n = jumlah alternatif (baris)
-    n = len(df)
-    k = 1.0 / np.log(n)
+    # Rumus Tesis: k = 1 / ln(m)  dan  E_j = -k * sum( P_ij * ln(P_ij) )
+    # =========================================================================
+    k = 1.0 / np.log(m)
 
     entropy_j = []
-    for col in p_matrix.columns:
-        # Ambil kolom p_ij
-        p_ij = p_matrix[col]
+    for idx, col in enumerate(columns):
+        P_ij = P[:, idx]
 
-        # Saring nilai p_ij yang bernilai 0, karena ln(0) tidak terdefinisi (NaN)
-        # Gunakan np.where untuk memberikan nilai 0 jika p_ij <= 0
-        log_p_ij = np.where(p_ij > 0, np.log(p_ij), 0.0)
+        # Jaring pengaman: ln(x) tidak terdefinisi jika x <= 0.
+        # Jika nilai P_ij <= 0, kita set hasil log-nya ke 0.0 agar tidak menghasilkan NaN.
+        log_P_ij = np.where(P_ij > 0, np.log(P_ij), 0.0)
 
-        # Hitung sum(p_ij * ln(p_ij))
-        sum_p_log_p = np.sum(p_ij * log_p_ij)
+        # Akumulasi perkalian P_ij * ln(P_ij) untuk seluruh alternatif
+        sum_p_log_p = np.sum(P_ij * log_P_ij)
 
-        # Hitung E_j
+        # E_j = -k * total akumulasi
         E_j = -k * sum_p_log_p
         entropy_j.append(E_j)
 
-    entropy_series = pd.Series(entropy_j, index=df.columns)
+    entropy_series = pd.Series(entropy_j, index=columns)
 
-    # 3. MENGHITUNG TINGKAT DIVERSIFIKASI (d_j)
-    # Rumus: d_j = 1 - E_j
+    # =========================================================================
+    # 3. DERAJAT KERAGAMAN (d_j)
+    # Rumus Tesis: d_j = 1 - E_j
+    # =========================================================================
     div_series = 1.0 - entropy_series
 
-    # 4. MENGHITUNG BOBOT ENTROPY FINAL (w_j)
-    # Rumus: w_j = d_j / sum(d_j)
+    # =========================================================================
+    # 4. BOBOT FINAL (W_j)
+    # Rumus Tesis: W_j = d_j / sum( d_j )
+    # =========================================================================
     weights_series = div_series / div_series.sum()
 
     return weights_series
-
