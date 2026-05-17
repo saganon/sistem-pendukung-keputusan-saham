@@ -11,6 +11,7 @@ df = pd.DataFrame([s.__dict__ for s in stock_list])
 df['market_cap'] = df['market_cap'].apply(lambda x: f"{x:,.0f}")
 
 print(df.to_string(index=False))
+print("\n" + "=" * 50 + "\n")
 
 kolom_target = {
     'price_to_book': 'PBV',
