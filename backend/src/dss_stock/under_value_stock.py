@@ -21,16 +21,16 @@ def under_value_stock():
         if usd_to_idr is None:
             hist_usd = usd_ticker.history(period="1d")
             usd_to_idr = float(hist_usd['Close'].iloc[-1])
+            print(f"Current USD to IDR Rate: {usd_to_idr}")
     except Exception as e:
         print(f"Gagal mengambil kurs live, menggunakan kurs default. Error: {e}")
 
-    # Membaca daftar kode saham energi
-    with open(file_path, "r", encoding="utf-8") as file:
-        content = file.readlines()
-
     list_under_value_stock = []
 
-    for x in content:
+    with open(file_path, "r", encoding="utf-8") as file:
+        list_of_stock_code = file.readlines()
+
+    for x in list_of_stock_code:
         stock_code = x.strip()
         if not stock_code:
             continue
@@ -38,7 +38,6 @@ def under_value_stock():
         print(f"Processing {stock_code}...")
         ticker = yf.Ticker(f"{stock_code}.JK")
 
-        # Ambil info utama
         info = ticker.info
 
         current_price = ticker.fast_info.get("last_price")
@@ -49,7 +48,6 @@ def under_value_stock():
         if current_price is None:
             current_price = info.get("previousClose")
 
-        # Jika masih None atau bernilai 0.0, tarik dari data historis
         if current_price is None or (isinstance(current_price, (int, float)) and current_price == 0.0):
             try:
                 hist = ticker.history(period="5d")  # Ambil opsi 5 hari untuk antisipasi hari libur
@@ -61,7 +59,6 @@ def under_value_stock():
         financial_currency = info.get('financialCurrency')
         market_currency = info.get('currency')
 
-        # (yfinance otomatis melakukan auto-convert ke IDR pada properti .info untuk saham IDX)
         raw_eps = info.get("trailingEps")
         raw_bvps = info.get("bookValue")
 
@@ -69,8 +66,6 @@ def under_value_stock():
             if raw_bvps is not None:
                 raw_bvps *= usd_to_idr
 
-        print(f"Stock {stock_code} | RAW BVPS {raw_bvps} | RAW EPS {raw_eps}")
-        # 3. Sinkronisasi ke Objek Model Data
         data = StockInfo(
             stock_code=stock_code,
             market_cap=info.get("marketCap"),
@@ -85,7 +80,6 @@ def under_value_stock():
             currency=market_currency if market_currency else 'Data tidak tersedia'
         )
 
-        # 4. Validasi Perhitungan Formula Graham
         if data.eps is None or data.bvps is None:
             print(f"Skipping stock {data.stock_code}: Missing EPS or BVPS data.")
             harga_wajar = 0.0
@@ -95,15 +89,12 @@ def under_value_stock():
         else:
             harga_wajar = GrahamFormula.calculate(eps=data.eps, bvps=data.bvps)
 
-        # 5. Logika Keputusan Evaluasi Akhir
         if data.current_price is None:
             print(f"Skipping decision for {data.stock_code}: Missing current market price data setelah jaring pengaman historis.")
         elif harga_wajar > data.current_price:
-            print(f"UNDERVALUE {data.stock_code} | Price: {data.current_price} | Harga Wajar: {harga_wajar:.2f} | Mata Uang Laporan Keuangan: {financial_currency} | Mata Uang Pasar (Saham): {market_currency}")
             list_under_value_stock.append(data)
 
         print("-" * 40)
 
-        # 6. Time Delay (Krusial: Mencegah rate-limit/blokir IP oleh Yahoo Finance)
         time.sleep(1.5)
     return list_under_value_stock
