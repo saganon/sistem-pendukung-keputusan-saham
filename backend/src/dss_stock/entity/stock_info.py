@@ -12,3 +12,4 @@ class StockInfo:
     current_price: str
     eps: float
     bvps: float
+    currency: str
