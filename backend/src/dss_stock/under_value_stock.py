@@ -73,7 +73,6 @@ def under_value_stock():
             market_cap=info.get("marketCap"),
             per=info.get("trailingPE"),
             price_to_book=info.get("priceToBook"),
-            return_on_equity=info.get("returnOnEquity"),
             return_on_assets=info.get("returnOnAssets"),
             debt_to_equity=info.get("debtToEquity"),
             current_price=current_price,

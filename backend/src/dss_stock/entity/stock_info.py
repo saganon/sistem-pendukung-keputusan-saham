@@ -7,7 +7,6 @@ class StockInfo:
     market_cap: str
     per: str
     price_to_book: str
-    return_on_equity: str
     return_on_assets: str
     debt_to_equity: str
     current_price: str
