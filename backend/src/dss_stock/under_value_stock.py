@@ -64,15 +64,23 @@ def under_value_stock():
         raw_eps = info.get("trailingEps")
         raw_bvps = info.get("bookValue")
 
+        # Konversi kurs jika laporan keuangan menggunakan USD
         if financial_currency != market_currency and financial_currency == "USD":
             if raw_bvps is not None:
                 raw_bvps *= usd_to_idr
+                
+        # HITUNG ULANG PBV SECARA MANUAL
+        # Mencegah pembagian dengan nol atau tipe data None
+        if current_price is not None and raw_bvps is not None and raw_bvps > 0:
+            calculated_pbv = current_price / raw_bvps
+        else:
+            calculated_pbv = info.get("priceToBook") # Fallback jika data kosong
 
         data = StockInfo(
             stock_code=stock_code,
             market_cap=info.get("marketCap"),
             per=info.get("trailingPE"),
-            price_to_book=info.get("priceToBook"),
+            price_to_book=calculated_pbv, # Menggunakan PBV yang sudah dikalkulasi ulang
             return_on_assets=info.get("returnOnAssets"),
             debt_to_equity=info.get("debtToEquity"),
             current_price=current_price,
