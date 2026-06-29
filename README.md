@@ -7,9 +7,9 @@ Install all dependencies. Go to `backend` directory and run below command:
 pip3 install .
 ```
 
-Go to backend > src. Run the project
+Go to backend. Run the server
 ```
-python3 -m dss_stock.main
+PYTHONPATH=src uvicorn dss_stock.api.app:app --reload --port 8000
 ```
 
 Fix lint
