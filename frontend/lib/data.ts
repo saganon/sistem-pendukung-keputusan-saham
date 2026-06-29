@@ -2,7 +2,7 @@
 
 export const STOCKS = [
     {
-      kode: "MOCK",
+      kode: "ADMR",
       nama: "Alamtri Minerals Indonesia Tbk.",
       eps: 173,
       bvps: 559,
