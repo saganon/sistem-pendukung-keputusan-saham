@@ -2,7 +2,7 @@
 
 export const STOCKS = [
     {
-      kode: "ADMR",
+      kode: "MOCK",
       nama: "Alamtri Minerals Indonesia Tbk.",
       eps: 173,
       bvps: 559,
@@ -150,4 +150,4 @@ export const STOCKS = [
     ],
   };
   
-  export type Stock = typeof STOCKS[0];
+export type { Stock } from "@/lib/types";

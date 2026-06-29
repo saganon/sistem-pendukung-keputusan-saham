@@ -1,49 +1,54 @@
 import pandas as pd
 
-from dss_stock.calculate_entropy_weight import calculate_entropy_weights
-from dss_stock.calculate_topsis import calculate_topsis
-from dss_stock.under_value_stock import under_value_stock
+from dss_stock.backtesting_report import print_backtesting_tables, run_backtesting_analysis
+from dss_stock.entropy_report import print_entropy_tables, run_entropy_analysis
+from dss_stock.report import build_merged_screening_table, print_formula_legend
+from dss_stock.topsis_report import print_topsis_tables, run_topsis_analysis
+from dss_stock.under_value_stock import screen_graham_undervalued
 
-stock_list = under_value_stock()
 
-df = pd.DataFrame([s.__dict__ for s in stock_list])
+def main() -> None:
+    undervalued_stocks, all_results = screen_graham_undervalued()
 
-df['market_cap'] = df['market_cap'].apply(lambda x: f"{x:,.0f}")
+    if not all_results:
+        print("\nTidak ada data saham yang berhasil diproses.")
+        return
 
-print(df.to_string(index=False))
-print("\n" + "=" * 50 + "\n")
+    df_merged = build_merged_screening_table(all_results)
 
-kolom_target = {
-    'price_to_book': 'PBV',
-    'eps': 'EPS',
-    'return_on_assets': 'ROA',
-    'debt_to_equity': 'DER'
-}
+    pd.options.display.float_format = "{:,.4f}".format
+    pd.options.display.max_columns = None
+    pd.options.display.width = None
 
-data_saham = df[list(kolom_target.keys())].rename(columns=kolom_target).to_dict(orient='list')
-tickers = df['stock_code'].tolist()
+    print("\n=== Tabel Gabungan: Data yfinance + Perhitungan + Screening ===")
+    print_formula_legend()
+    print(df_merged.to_string(index=False))
 
-df_kriteria = pd.DataFrame(data_saham, index=tickers)
+    print("\n=== Saham Undervalued (lolos pre-filtering) ===")
+    df_undervalued = df_merged[df_merged["status"] == "undervalued"]
+    if df_undervalued.empty:
+        print("Tidak ada saham yang memenuhi kriteria undervalued.")
+        return
 
-print("--- Matriks Keputusan Awal ---")
-print(df_kriteria)
-print("\n" + "=" * 50 + "\n")
+    print(df_undervalued.to_string(index=False))
 
-bobot_entropy = calculate_entropy_weights(df_kriteria)
+    if len(undervalued_stocks) < 2:
+        print(
+            "\nEntropy/TOPSIS tidak dihitung: minimal 2 saham undervalued "
+            f"(saat ini {len(undervalued_stocks)})."
+        )
+        return
 
-print("--- Hasil ENTROPY ---")
-print(bobot_entropy)
-print("\n" + "=" * 50 + "\n")
+    _, entropy_steps = run_entropy_analysis(undervalued_stocks)
+    print_entropy_tables(entropy_steps)
 
-jenis_kriteria = {
-    "PBV": "cost",
-    "EPS": "benefit",
-    "ROA": "benefit",
-    "DER": "cost",
-}
+    topsis_steps = run_topsis_analysis(undervalued_stocks, entropy_steps)
+    print_topsis_tables(topsis_steps)
 
-hasil_topsis = calculate_topsis(df_kriteria, bobot_entropy, jenis_kriteria)
+    stock_codes = [stock.stock_code for stock in undervalued_stocks]
+    backtesting_steps = run_backtesting_analysis(stock_codes)
+    print_backtesting_tables(backtesting_steps)
 
-print("--- Hasil Perankingan Akhir Menggunakan Metode TOPSIS ---")
-pd.options.display.float_format = "{:,.4f}".format
-print(hasil_topsis[["D_plus", "D_minus", "Skor_TOPSIS", "Rank"]])
+
+if __name__ == "__main__":
+    main()
