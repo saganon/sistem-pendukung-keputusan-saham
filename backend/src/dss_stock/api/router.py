@@ -38,11 +38,6 @@ def get_analysis() -> AnalysisResponseSchema:
     return AnalysisResponseSchema.model_validate(analysis_service.get_analysis_response())
 
 
-@router.get("/meta", response_model=MetaSchema, tags=["analysis"])
-def get_meta() -> MetaSchema:
-    return MetaSchema.model_validate(analysis_service.get_analysis_response()["meta"])
-
-
 @router.get(
     "/graham",
     response_model=list[GrahamStockSchema],
