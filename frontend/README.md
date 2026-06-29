@@ -2,7 +2,23 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Environment Variables
+
+To change the configuration (the source of data, URL API, etc.), create file **`.env.local`** in folder `frontend/`:
+
+Edit `.env.local` using below data:
+
+```env
+# Source of data: api | mock
+NEXT_PUBLIC_DATA_SOURCE=api
+
+# URL backend
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+```
+
+After change`.env.local`, restart dev server (`npm run dev`).
+
+Then, run the development server:
 
 ```bash
 npm run dev
