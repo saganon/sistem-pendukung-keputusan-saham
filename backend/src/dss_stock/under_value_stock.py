@@ -18,24 +18,27 @@ def _load_stock_codes() -> list[str]:
 def screen_graham_undervalued(
     fiscal_year: int = FISCAL_YEAR,
     sleep_seconds: float = 1.0,
+    verbose: bool = True,
 ) -> tuple[list[StockInfo], list[StockInfo]]:
     """Hitung Graham Number dan kategorikan saham undervalued/overvalued."""
-    print(
-        f"Mengambil data input laporan audit tahun fiskal {fiscal_year} "
-        f"(publikasi {PUBLICATION_YEAR}) dari Yahoo Finance..."
-    )
-    print("Rumus: Graham Number = sqrt(22.5 x EPS x BVPS)")
-    print("Kriteria undervalued: harga pasar < Graham Number")
-    print(
-        "Semua data pasar & kurs: historis tahun publikasi 2025 "
-        "(bukan data terkini)\n"
-    )
+    if verbose:
+        print(
+            f"Mengambil data input laporan audit tahun fiskal {fiscal_year} "
+            f"(publikasi {PUBLICATION_YEAR}) dari Yahoo Finance..."
+        )
+        print("Rumus: Graham Number = sqrt(22.5 x EPS x BVPS)")
+        print("Kriteria undervalued: harga pasar < Graham Number")
+        print(
+            "Semua data pasar & kurs: historis tahun publikasi 2025 "
+            "(bukan data terkini)\n"
+        )
 
     all_results: list[StockInfo] = []
     undervalued_stocks: list[StockInfo] = []
 
     for stock_code in _load_stock_codes():
-        print(f"Memproses {stock_code}...")
+        if verbose:
+            print(f"Memproses {stock_code}...")
         try:
             audit = fetch_audit_input(stock_code=stock_code, fiscal_year=fiscal_year)
             financials = fetch_annual_financials(
@@ -43,12 +46,14 @@ def screen_graham_undervalued(
                 fiscal_year=fiscal_year,
             )
         except ValueError as error:
-            print(f"  Gagal: {error}")
-            print("-" * 40)
+            if verbose:
+                print(f"  Gagal: {error}")
+                print("-" * 40)
             time.sleep(sleep_seconds)
             continue
 
-        _print_audit_input(audit)
+        if verbose:
+            _print_audit_input(audit)
 
         if GrahamFormula.is_applicable(financials.eps, financials.bvps):
             graham_number = GrahamFormula.calculate(
@@ -56,10 +61,11 @@ def screen_graham_undervalued(
                 bvps=financials.bvps,
             )
         else:
-            print(
-                f"  Graham Number tidak berlaku: EPS={financials.eps}, "
-                f"BVPS={financials.bvps}"
-            )
+            if verbose:
+                print(
+                    f"  Graham Number tidak berlaku: EPS={financials.eps}, "
+                    f"BVPS={financials.bvps}"
+                )
             graham_number = 0.0
 
         valuation_status = GrahamFormula.classify(
@@ -104,22 +110,25 @@ def screen_graham_undervalued(
         )
         all_results.append(stock_info)
 
-        print(f"  ROA: {financials.return_on_assets:.4%}")
-        print(f"  DER: {financials.debt_to_equity:.4f}")
-        print(f"  EPS (IDR): {financials.eps:,.4f}")
-        print(f"  BVPS (IDR): {financials.bvps:,.4f}")
-        print(f"  PBV: {financials.price_to_book:,.4f}")
-        print(
-            f"  Harga saham ({audit.stock_price_date:%Y-%m-%d}): "
-            f"{financials.stock_price:,.2f}"
-        )
-        print(f"  Graham Number: {graham_number:,.2f}")
-        print(f"  Status: {valuation_status}")
+        if verbose:
+            print(f"  ROA: {financials.return_on_assets:.4%}")
+            print(f"  DER: {financials.debt_to_equity:.4f}")
+            print(f"  EPS (IDR): {financials.eps:,.4f}")
+            print(f"  BVPS (IDR): {financials.bvps:,.4f}")
+            print(f"  PBV: {financials.price_to_book:,.4f}")
+            print(
+                f"  Harga saham ({audit.stock_price_date:%Y-%m-%d}): "
+                f"{financials.stock_price:,.2f}"
+            )
+            print(f"  Graham Number: {graham_number:,.2f}")
+            print(f"  Status: {valuation_status}")
+            print("-" * 40)
+        else:
+            print(f"  {stock_code}: {valuation_status}")
 
         if valuation_status == "undervalued":
             undervalued_stocks.append(stock_info)
 
-        print("-" * 40)
         time.sleep(sleep_seconds)
 
     return undervalued_stocks, all_results
