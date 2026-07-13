@@ -1,11 +1,22 @@
 """Aplikasi FastAPI backend."""
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from dss_stock.api.router import router
+from dss_stock.calculation_log import configure_calculation_logging
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    configure_calculation_logging()
+    yield
+
 
 app = FastAPI(
+    lifespan=lifespan,
     title="Sistem Pendukung Keputusan Saham API",
     description=(
         "API backend untuk dashboard analisis saham sektor energi "

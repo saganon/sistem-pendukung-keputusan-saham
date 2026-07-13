@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rekomendasi Saham Energi",
+  title: "Pemeringkatan Objektif Saham Energi",
   description:
-    "Analisis dan peringkat rekomendasi saham energi terpilih berdasarkan data keuangan",
+    "Analisis dan peringkat objektif saham energi terpilih berdasarkan data keuangan",
 };
 
 export default function RootLayout({

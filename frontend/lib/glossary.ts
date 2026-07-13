@@ -28,7 +28,7 @@ export const INFO_CONTENT: Record<string, InfoContent> = {
       {
         heading: "Mengapa penting dipahami?",
         items: [
-          "Kode memudahkan identifikasi perusahaan di aplikasi trading",
+          "Kode memudahkan identifikasi perusahaan di aplikasi sekuritas",
           "Satu kode = satu emiten (perusahaan terbuka) di bursa",
           "Kode tidak selalu sama persis dengan nama perusahaan — ada yang disingkat",
         ],
@@ -44,14 +44,14 @@ export const INFO_CONTENT: Record<string, InfoContent> = {
     sections: [
       {
         heading: "Apa yang dilakukan sistem?",
-        body: "Sistem ini membantu membandingkan beberapa saham energi terpilih dengan empat langkah: menilai apakah harganya masih murah, menentukan faktor keuangan mana yang paling berpengaruh, memberi peringkat rekomendasi, lalu menguji apakah peringkat tersebut sesuai dengan kenaikan harga nyata.",
+        body: "Sistem ini membantu membandingkan beberapa saham energi terpilih dengan empat langkah: menilai apakah harganya masih murah, menentukan faktor keuangan mana yang paling berpengaruh, memberikan peringkat objektif, lalu menguji apakah peringkat tersebut sesuai dengan kenaikan harga nyata.",
       },
       {
         heading: "Langkah analisis",
         items: [
           "Filter harga wajar — hanya saham yang dinilai masih murah",
           "Penentuan bobot faktor — faktor dengan variasi terbesar mendapat bobot tertinggi",
-          "Peringkat rekomendasi — saham dinilai secara menyeluruh dan diurutkan",
+          "Peringkat objektif — saham dinilai secara menyeluruh dan diurutkan",
           "Pengujian hasil — peringkat dibandingkan dengan kenaikan harga aktual",
         ],
         body: "",
@@ -67,7 +67,7 @@ export const INFO_CONTENT: Record<string, InfoContent> = {
     sections: [
       {
         heading: "Apa yang dibandingkan?",
-        body: "Kami membandingkan harga saham di pasar saat ini dengan perkiraan harga wajar berdasarkan rumus Benjamin Graham, seorang investor terkenal yang dikenal dengan pendekatan valuasi fundamental.",
+        body: "Sistem membandingkan harga saham di pasar saat ini dengan perkiraan harga wajar berdasarkan rumus Benjamin Graham, seorang investor terkenal yang dikenal dengan pendekatan valuasi fundamental.",
       },
       {
         heading: "Cara membaca grafik",
@@ -156,11 +156,11 @@ export const INFO_CONTENT: Record<string, InfoContent> = {
     ],
   },
   topsis: {
-    title: "Bagaimana peringkat rekomendasi dibuat?",
+    title: "Bagaimana peringkat objektif dibuat?",
     sections: [
       {
         heading: "Apa yang dilakukan?",
-        body: "Setiap saham yang lolos filter harga wajar dinilai berdasarkan empat faktor keuangan (keuntungan, utang, efisiensi aset, harga vs nilai buku) dengan bobot yang sudah ditentukan. Hasilnya adalah peringkat dari yang paling direkomendasikan hingga yang paling rendah.",
+        body: "Setiap saham yang lolos filter harga wajar dinilai berdasarkan empat faktor keuangan (keuntungan, utang, efisiensi aset, harga vs nilai buku) dengan bobot yang sudah ditentukan. Hasilnya adalah peringkat dari yang paling baik secara fundamental hingga yang paling rendah.",
       },
       {
         heading: "Cara membaca peringkat",
@@ -179,16 +179,16 @@ export const INFO_CONTENT: Record<string, InfoContent> = {
     ],
   },
   backtesting: {
-    title: "Apa itu pengujian rekomendasi?",
+    title: "Apa itu pengujian objektif?",
     sections: [
       {
         heading: "Apa yang diuji?",
-        body: "Kami membandingkan peringkat analisis (per April 2025) dengan peringkat kenaikan harga saham yang benar-benar terjadi setelahnya. Tujuannya: melihat apakah rekomendasi fundamental sesuai dengan pergerakan harga nyata.",
+        body: "Sistem membandingkan peringkat analisis (per April 2025) dengan peringkat kenaikan harga saham yang benar-benar terjadi setelahnya. Tujuannya: melihat apakah data fundamental sesuai dengan pergerakan harga nyata.",
       },
       {
         heading: "Cara membaca grafik",
         items: [
-          "Sumbu horizontal = peringkat dari analisis kami",
+          "Sumbu horizontal = peringkat dari analisis sistem",
           "Sumbu vertikal = peringkat kenaikan harga nyata",
           "Jika titik membentuk garis naik → analisis cenderung akurat",
           "Jika titik tersebar acak → ada faktor lain di luar analisis fundamental",

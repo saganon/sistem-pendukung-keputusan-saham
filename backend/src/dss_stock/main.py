@@ -1,10 +1,12 @@
 from dss_stock.backtesting_report import print_backtesting_tables, run_backtesting_analysis
+from dss_stock.calculation_log import configure_calculation_logging
 from dss_stock.entropy_report import print_entropy_tables, run_entropy_analysis
 from dss_stock.graham_report import run_graham_analysis
 from dss_stock.topsis_report import print_topsis_tables, run_topsis_analysis
 
 
 def main() -> None:
+    configure_calculation_logging()
     undervalued_stocks, all_results = run_graham_analysis(verbose=False)
 
     if not all_results:

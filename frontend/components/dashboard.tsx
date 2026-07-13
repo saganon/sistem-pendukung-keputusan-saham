@@ -76,7 +76,7 @@ function RankDelta({ rankA, rankB }: { rankA: number; rankB: number }) {
         → Sama
       </span>
     );
-  if (diff < 0)
+  if (diff > 0)
     return (
       <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
         ↑ Naik {Math.abs(diff)} peringkat
@@ -190,7 +190,7 @@ export function Dashboard({ data }: DashboardProps) {
       valueColor: "text-emerald-600",
     },
     {
-      label: "Rekomendasi Teratas",
+      label: "Peringkat Objektif Teratas",
       value: topStock.kode,
       sub: `Peringkat 1 dari ${totalEmiten} saham`,
       valueColor: "text-blue-600",
@@ -258,7 +258,7 @@ export function Dashboard({ data }: DashboardProps) {
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-sm sm:text-base font-bold text-slate-900 leading-snug tracking-tight">
-                  Rekomendasi Saham Energi
+                  Peringkat Objektif Saham Energi
                 </h1>
                 <InfoButton infoKey="overview" />
               </div>
@@ -300,7 +300,7 @@ export function Dashboard({ data }: DashboardProps) {
               Kesimpulan Analisis
             </p>
             <p className="text-sm text-slate-700 leading-relaxed">
-              Berdasarkan analisis kami, saham{" "}
+              Berdasarkan analisis sistem, saham{" "}
               <strong className="text-slate-900">{topStock.kode}</strong> (
               {topStock.nama}) menduduki{" "}
               <strong className="text-slate-900">peringkat teratas</strong> dari{" "}
@@ -483,8 +483,8 @@ export function Dashboard({ data }: DashboardProps) {
             <CardHeader className="pb-3 px-6 pt-6">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <SectionHeader
-                  title="Peringkat Rekomendasi Saham"
-                  subtitle="Saham diurutkan dari yang paling direkomendasikan (peringkat 1) hingga yang paling rendah."
+                  title="Peringkat Objektif Saham"
+                  subtitle="Saham diurutkan dari yang paling baik secara fundamental (peringkat 1) hingga yang paling rendah."
                   infoKey="topsis"
                 />
                 <div className="flex gap-1 shrink-0 bg-slate-100 rounded-lg p-1">
@@ -598,8 +598,8 @@ export function Dashboard({ data }: DashboardProps) {
             <CardHeader className="pb-2 px-6 pt-6">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <SectionHeader
-                  title="Apakah Rekomendasi Terbukti Benar?"
-                  subtitle="Kami membandingkan peringkat analisis dengan kenaikan harga saham yang benar-benar terjadi setelahnya."
+                  title="Apakah Peringkat Analisis Terbukti Benar?"
+                  subtitle="Sistem membandingkan peringkat analisis dengan kenaikan harga saham yang benar-benar terjadi setelahnya."
                   infoKey="backtesting"
                 />
                 <div className="flex gap-2 shrink-0">
@@ -626,7 +626,7 @@ export function Dashboard({ data }: DashboardProps) {
                   Perbandingan Peringkat
                 </p>
                 <p className="text-[11px] text-slate-400 mb-4">
-                  Sumbu horizontal = peringkat analisis kami · Sumbu vertikal =
+                  Sumbu horizontal = peringkat analisis sistem · Sumbu vertikal =
                   peringkat kenaikan harga nyata
                 </p>
                 <ResponsiveContainer width="100%" height={260}>
@@ -644,7 +644,7 @@ export function Dashboard({ data }: DashboardProps) {
                       tickLine={false}
                     >
                       <Label
-                        value="Peringkat Analisis Kami"
+                        value="Peringkat Analisis Sistem"
                         offset={-10}
                         position="insideBottom"
                         style={{
@@ -769,7 +769,7 @@ export function Dashboard({ data }: DashboardProps) {
                   Apa artinya untuk Anda?
                 </p>
                 <p className="text-[12px] text-amber-800 leading-relaxed">
-                  Dari data yang kami uji, peringkat analisis fundamental{" "}
+                  Dari data yang sistem uji, peringkat analisis fundamental{" "}
                   <strong>belum selalu sama</strong> dengan kenaikan harga aktual.
                   Artinya, harga saham juga dipengaruhi kondisi ekonomi global,
                   harga komoditas, dan berita pasar — bukan hanya angka keuangan
@@ -783,11 +783,7 @@ export function Dashboard({ data }: DashboardProps) {
 
         <footer className="text-center py-8 border-t border-slate-200 space-y-1">
           <p className="text-[11px] text-slate-400 tracking-wide">
-            Rekomendasi Saham Energi · {meta.periodeData} · Universitas Bina
-            Nusantara 2026
-          </p>
-          <p className="text-[10px] text-slate-300">
-            Sistem Pendukung Keputusan Investasi Saham — Tugas Akhir
+            Peringkat Objektif Saham Energi · 2026
           </p>
         </footer>
       </div>
