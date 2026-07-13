@@ -29,11 +29,13 @@ dependencies = [
     "numpy",
     "fastapi[standard]",
     "uvicorn[standard]",
-    "ruff",  # For lint
 ]
 
+[project.optional-dependencies]
+dev = ["ruff"]
+
 [tool.fastapi]
-entrypoint = "dss_stock.api.app:app"
+entrypoint = "main:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]

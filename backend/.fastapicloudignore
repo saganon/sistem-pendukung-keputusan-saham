@@ -1,4 +1,4 @@
-# Keep deploy payload lean (already partly covered by .gitignore)
+# Keep deploy payload lean
 Python/
 **/__pycache__/
 .ruff_cache/
@@ -6,3 +6,4 @@ Python/
 *.pdf
 *.iml
 tests/
+.venv/

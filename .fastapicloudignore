@@ -1,0 +1,13 @@
+# Deploy only the backend API from the monorepo root.
+frontend/
+.idea/
+.venv/
+**/.venv/
+**/node_modules/
+**/.next/
+**/__pycache__/
+.ruff_cache/
+*.iml
+*.pdf
+*.xlsx
+.DS_Store
