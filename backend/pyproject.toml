@@ -27,10 +27,13 @@ dependencies = [
     "yfinance",
     "pandas",
     "numpy",
-    "fastapi",
+    "fastapi[standard]",
     "uvicorn[standard]",
-    "ruff" # For lint
+    "ruff",  # For lint
 ]
+
+[tool.fastapi]
+entrypoint = "dss_stock.api.app:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]

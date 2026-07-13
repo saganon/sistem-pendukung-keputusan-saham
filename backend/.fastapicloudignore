@@ -1,0 +1,8 @@
+# Keep deploy payload lean (already partly covered by .gitignore)
+Python/
+**/__pycache__/
+.ruff_cache/
+*.xlsx
+*.pdf
+*.iml
+tests/
